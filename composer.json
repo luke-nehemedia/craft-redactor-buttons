@@ -1,0 +1,41 @@
+{
+    "name": "lucasbares/craft-redactor-buttons",
+    "description": "Adds (bootstrap styled) buttons to the Redactor editor in Craftcms",
+    "type": "craft-plugin",
+    "version": "1.0.1",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "craft redactor buttons",
+        "bootstrap buttons"
+    ],
+    "support": {
+        "docs": "https://github.com/luke-nehemedia/craft-redactor-buttons/blob/master/README.md",
+        "issues": "https://github.com/luke-nehemedia/craft-redactor-buttons/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Lucas Bares",
+            "homepage": "http://luke.nehemedia.de"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0-RC1"
+    },
+    "autoload": {
+        "psr-4": {
+          "lucasbares\\craftredactorbuttons\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Craft Redactor Buttons",
+        "handle": "craft-redactor-buttons",
+        "hasCpSettings": true,
+        "hasCpSection": false,
+        "changelogUrl": "https://raw.githubusercontent.com/luke-nehemedia/craft-redactor-buttons/master/CHANGELOG.md",
+        "class": "lucasbares\\craftredactorbuttons\\CraftRedactorButtons"
+    }
+}

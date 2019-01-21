@@ -1,0 +1,27 @@
+{#/**
+ * Craft Redactor Buttons plugin for Craft CMS 3.x
+ *
+ * Adds (bootstrap styled) buttons for links to the Redactor editor in Craftcms
+ *
+ * @author    Lucas Bares
+ * @copyright Copyright (c) 2019 Lucas Bares
+ * @link      http://luke.nehemedia.de
+ * @package   CraftRedactorButtons
+ * @since     1.0.0
+ */
+#}
+
+{% import "_includes/forms" as forms %}
+
+{{ stylesField|raw }}
+
+{{ forms.textAreaField ({
+    first: false,
+    label: 'custom CSS'|t('craft-redactor-buttons'),
+    instructions: 'Define css rules for the buttons in the redactor-plugin editor'|t('craft-redactor-buttons'),
+    id: 'buttonCss',
+    name: 'buttonCss',
+    required: false,
+    rows: 20,
+    value: settings.buttonCss})
+}}
