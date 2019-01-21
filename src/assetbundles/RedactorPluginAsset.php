@@ -38,6 +38,7 @@ class RedactorPluginAsset extends AssetBundle
         ];
 
         $this->css = [
+            // CSS styles for the editor
             'redactor-plugin/redactorButtons/redactorButtons-cpStyles.css',
         ];
 

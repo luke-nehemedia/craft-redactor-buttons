@@ -2,7 +2,7 @@
     "name": "lucasbares/craft-redactor-buttons",
     "description": "Adds (bootstrap styled) buttons to the Redactor editor in Craftcms",
     "type": "craft-plugin",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "keywords": [
         "craft",
         "cms",
