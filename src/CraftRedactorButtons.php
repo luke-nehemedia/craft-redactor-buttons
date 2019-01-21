@@ -113,36 +113,29 @@ class CraftRedactorButtons extends Plugin
 
         $rows = $this->getSettings()->buttonStyles;
 
-        if(empty($rows) or count($rows) == 0){
-            $rows = [[
-                'label' => 'Primary',
-                'handle' => 'primary',
-                'cssclass' => 'btn-primary']];
-        }
-
         $stylesField = Craft::$app->getView()->renderTemplateMacro('_includes/forms', 'editableTableField',
             [
 
                 [
-                    'label' => 'Button Styles',
-                    'instructions' => Craft::t('app', 'Define the available options.'),
+                    'label' => Craft::t('craft-redactor-buttons','Button Styles'),
+                    'instructions' => Craft::t('craft-redactor-buttons', 'Define the available button styles, e.g. primary, secondary, info, ...'),
                     'id' => 'buttonStyles',
                     'name' => 'buttonStyles',
-                    'addRowLabel' => Craft::t('app', 'Add a button style'),
+                    'addRowLabel' => Craft::t('craft-redactor-buttons', 'Add a button style'),
                     'cols' => [
                         'label' => [
-                            'heading' => Craft::t('app', 'Button Label'),
+                            'heading' => Craft::t('craft-redactor-buttons', 'Style label'),
                             'type' => 'singleline',
                             'autopopulate' => 'handle',
                         ],
                         'handle' => [
-                            'heading' => Craft::t('app', 'Handle'),
+                            'heading' => Craft::t('craft-redactor-buttons', 'Handle'),
                             'type' => 'singleline',
                             'class' => 'code',
                             'autopopulate' => 'cssclass'
                         ],
                         'cssclass' => [
-                            'heading' => Craft::t('app', 'CSS class'),
+                            'heading' => Craft::t('craft-redactor-buttons', 'CSS class'),
                             'type' => 'singleline',
                             'class' => 'code'
                         ],

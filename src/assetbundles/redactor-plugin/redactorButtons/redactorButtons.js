@@ -121,7 +121,7 @@ var redactorButtons = $R.extend(true,$R.plugins.craftEntryLinks.prototype, {
 
         var options = $R.extend(true,Craft.RedactorInput.currentInstance.linkOptions[0]);
         newList['custom-b1'] = {
-            title: 'Button Link to an entry',
+            title: '## entry-button-label ##',
             api: 'plugin.redactorButtons.showSelectModal',
             args: {
                 elementType: options.elementType,
@@ -132,7 +132,7 @@ var redactorButtons = $R.extend(true,$R.plugins.craftEntryLinks.prototype, {
         };
 
         newList['custom-b2'] = {
-            title: 'Button Link to a URL',
+            title: '## url-button-label ##',
             api: 'plugin.redactorButtons.showURLModal',
             args: {
                 elementType: options.elementType,
@@ -201,31 +201,6 @@ var redactorButtons = $R.extend(true,$R.plugins.craftEntryLinks.prototype, {
 
         return optionHtml;
     }
-});
-
-
-$R.addLang('en', {
-    "style": "Style",
-    "primary": "Primary",
-    "secondary": "Secondary",
-    "success": "Success",
-    "danger": "Danger",
-    "warning": "Warning",
-    "info": "Info",
-    "light": "Light",
-    "dark": "Dark"
-});
-
-$R.addLang('de', {
-    "style": "Stil",
-    "primary": "Primärfarbe",
-    "secondary": "Sekundärfarbe",
-    "success": "Erfolg",
-    "danger": "Gefahr",
-    "warning": "Warnung",
-    "info": "Info",
-    "light": "Hell",
-    "dark": "Dunkel"
 });
 
 

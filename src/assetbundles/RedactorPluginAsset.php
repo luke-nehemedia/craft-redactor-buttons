@@ -10,8 +10,11 @@
 
 namespace lucasbares\craftredactorbuttons\assetbundles;
 
+use Craft;
+use craft\redactor\assets\redactor\RedactorAsset;
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
+use craft\web\View;
 
 /**
  * @author    Lucas Bares
@@ -32,10 +35,20 @@ class RedactorPluginAsset extends AssetBundle
 
         $this->depends = [
             CpAsset::class,
+            RedactorAsset::class,
         ];
 
-        $this->js = [
-        ];
+        $this->js = [];
+
+        $lang = Craft::$app->getTargetLanguage();
+        $langFile = 'redactor-plugin/redactorButtons/redactorButtons.'.$lang.'.js';
+
+        if(is_file($this->sourcePath.'/'.$langFile)){
+            $this->js[999] = [$langFile, View::POS_END];
+        }else{
+            $this->js[999] = ['redactor-plugin/redactorButtons/redactorButtons.en.js', View::POS_READY];
+        }
+
 
         $this->css = [
             // CSS styles for the editor
