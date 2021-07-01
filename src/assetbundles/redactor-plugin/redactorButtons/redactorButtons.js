@@ -7,11 +7,16 @@
  * @link      http://luke.nehemedia.de
  * @copyright Copyright (c) 2019 Lucas Bares
  */
-
-
-var redactorButtons = $R.extend(true,$R.plugins.craftEntryLinks.prototype, {
-    refHandle: '',
-    selectElement: {},
+var redactorButtons = $.extend({}, Craft.Redactor.PluginBase, {
+    linkOptions: [],
+    existingText: '',
+    hack: null,
+    modalState: {
+        selectedLink: {
+            text: null,
+            url: null
+        }
+    },
 
     modals: {
         // this is variable with modal HTML body
@@ -41,38 +46,111 @@ var redactorButtons = $R.extend(true,$R.plugins.craftEntryLinks.prototype, {
             </form>',
     },
 
+
     init: function(app) {
         this.app = app;
         this.selection = app.selection;
 
     },
 
+    showSelectModal: function(arguments, zIndex){
+        let refHandle = arguments.refHandle,
+            callback = arguments.callback;
+
+        this.saveSelection(this.app);
+
+		// Create a new one each time because Redactor creates a new one and we can't reuse the references.
+        const modal = Craft.createElementSelectorModal(arguments.elementType, {
+            storageKey: 'RedactorInput.LinkTo.' + arguments.elementType,
+            sources: arguments.sources,
+            criteria: arguments.criteria,
+            defaultSiteId: this.elementSiteId,
+            autoFocusSearchBox: false,
+            onSelect: $.proxy(function(elements) {
+                if (elements.length) {
+                    const element = elements[0];
+					
+					var options = {
+	                    title: 'Redactor Button', // the modal title
+	                    name: 'redactorButtonsModal', // the modal variable in modals object
+	                    commands: {
+	                        cancel: { title: 'Cancel' }, // the cancel button in the modal
+	                        insert: { title: 'Insert' }
+	                    }
+	                };
+                
+                    this.restoreSelection(this.app);
+
+                    this.modalState.selectedLink = {
+                        url: element.url + '#' + refHandle + ':' + element.id + '@' + element.siteId,
+                        text: this.app.selection.getText().length > 0 ? this.app.selection.getText() : element.label
+                    }
+
+                    //this.app.api('module.link.open');
+                    this.app.api('module.modal.build', options);
+                }
+            }, this),
+            closeOtherModals: false,
+        });
+    },
+
+    showURLModal: function (arguments, zIndex) {
+        let refHandle = arguments.refHandle,
+            callback = arguments.callback;
+
+        this.saveSelection(this.app);
+        
+        var options = {
+            title: 'Redactor Button', // the modal title
+            name: 'redactorButtonsModal', // the modal variable in modals object
+            commands: {
+                cancel: { title: 'Cancel' }, // the cancel button in the modal
+                insert: { title: 'Insert' }
+            }
+        };
+		
+		this.modalState.selectedLink = {
+            text: this.app.selection.getText().length > 0 ? this.app.selection.getText() : element.label
+        }
+		
+        this.app.api('module.modal.build', options);
+    },
+
+
     // messages
     onmodal: {
         redactorButtonsModal: {
 
             // Preload fields
-            open: function($modal, $form){
+            open: function(modal, form){
+	            // Prevent Redactor from aggressively refocusing, when we don't want it to.
+                this.hack = modal.app.editor.focus;
+                modal.app.editor.focus = () => null;
+				
+				$form = $(form.nodes);
 
-                if(this.selectedText){
-                    $form.setData({ text: this.selectedText });
+                if (this.modalState.selectedLink.url) {
+                    $form.find('input[name=url]').val(this.modalState.selectedLink.url);
                 }
 
-                if(this.selectElement.length){
-                    $form.setData({ text: this.selectElement[0].label });
+                if (this.modalState.selectedLink.text) {
+                    $form.find('input[name=text]').val(this.modalState.selectedLink.text);
                 }
 
-                if(this.app.selection.getText().length){
-                    $form.setData( {text: this.app.selection.getText() });
-                }
-
-                if(this.selectElement.length){
-                    $form.setData({ url: this.selectElement[0].url });
-                }
-
+                this.modalState.selectedLink = {
+                    text: null,
+                    url: null
+                };
+				
                 // Fill select field with defined styles
-                var select = jQuery($form.nodes[0].children[4]).find('select');
+                var select = jQuery(form.nodes[0].children[4]).find('select');
                 jQuery(select).append(this._optionButtonStyles());
+            },
+            
+            close: function (modal) {
+                // Revert the functionality.
+                modal.app.editor.focus = this.hack;
+                this.hack = null;
             },
 
             insert: function($modal, $form)
@@ -80,12 +158,13 @@ var redactorButtons = $R.extend(true,$R.plugins.craftEntryLinks.prototype, {
                 var formData = $form.getData();
 
                 // callback from selectElement modal
-                if (this.selectElement.length) {
+                if (this.modalState.selectedLink.text) {
                     this.app.selection.restore();
-
+					//or: this.restoreSelection(this.app);
+					
                     var data = {
                         url: formData.url,
-                        text: this.selectedText.length > 0 ? this.selectedText : formData.text,
+                        text: this.modalState.selectedLink.text.length > 0 ? this.selectedText : formData.text,
                     };
 
                     // insert link
@@ -148,50 +227,8 @@ var redactorButtons = $R.extend(true,$R.plugins.craftEntryLinks.prototype, {
 
 
     },
-
-    showSelectModal: function(arguments){
-        this.showModal(arguments);
-        this.app.selection.save();
-        this.selectedText = this.app.selection.getText();
-
-
-        // Define onSelect callback
-        this['selectionModal_'+this.refHandle].onSelect = $.proxy(function(elements) {
-
-            if (elements.length) {
-
-                this.selectElement = elements;
-
-                var options = {
-                    title: 'Redactor Button', // the modal title
-                    name: 'redactorButtonsModal', // the modal variable in modals object
-                    commands: {
-                        cancel: { title: 'Cancel' }, // the cancel button in the modal
-                        insert: { title: 'Insert' }
-                    }
-                };
-
-                this.app.selection.restore();
-                this.app.api('module.modal.build', options);
-
-            }
-        }, this);
-
-    },
-
-    showURLModal: function(arguments){
-        var options = {
-            title: 'Redactor Button', // the modal title
-            name: 'redactorButtonsModal', // the modal variable in modals object
-            commands: {
-                cancel: { title: 'Cancel' }, // the cancel button in the modal
-                insert: { title: 'Insert' }
-            }
-        };
-
-        this.app.api('module.modal.build', options);
-    },
-
+    
+    
     _optionButtonStyles: function(){
         var optionHtml = '';
 

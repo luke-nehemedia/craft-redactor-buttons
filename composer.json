@@ -2,7 +2,7 @@
     "name": "lucasbares/craft-redactor-buttons",
     "description": "Adds customizable buttons (by default bootstrap styled) to the Redactor editor in Craftcms.",
     "type": "craft-plugin",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "keywords": [
         "craft",
         "cms",
@@ -23,7 +23,7 @@
         }
     ],
     "require": {
-        "craftcms/cms": "^3.0.0-RC1"
+        "craftcms/cms": "^3.6.0"
     },
     "autoload": {
         "psr-4": {
